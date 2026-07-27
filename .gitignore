@@ -48,11 +48,12 @@ lerna-debug.log*
 .temp
 .tmp
 
+# meto más cos
+
 # Runtime data
 pids
 *.pid
 *.seed
-*.pid.lock
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
