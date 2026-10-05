@@ -5,11 +5,16 @@
 #CitAppAPI
 
 1.Clonar el proyecto
+
 2. ````yarn install```` para instalar todas sus dependencias
+   
 3.Clonar el archivo ````.env.template```` y renombralo a ````.env````
+
 4. Cambiar las variables de entorno
-5. Levantar la base de datos
+
+6. Levantar la base de datos
 ````
 docker-compose up -d
 ````
+
 6. Levantar: ````yarn start:dev````
