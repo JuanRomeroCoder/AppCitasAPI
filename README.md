@@ -4,9 +4,7 @@
 
 #CitAppAPI
 
-1.Clonar el proyecto
-
-2. ````yarn install```` para instalar todas sus dependencias
+1.Clonar el proyecto ````yarn install```` para instalar todas sus dependencias
    
 3.Clonar el archivo ````.env.template```` y renombralo a ````.env````
 
