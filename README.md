@@ -2,7 +2,8 @@
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
 
-#CitAppAPI
+#CitAppAPI 
+  Backend realizado para consolidar mi aprendizaje e intentar replicar una aplicación real.
 
 1. Clonar el proyecto 
 
