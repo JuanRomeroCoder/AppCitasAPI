@@ -12,4 +12,3 @@
       container_name: CitApp
       volumes:
         - ./postgres:/var/lib/postgresql/data
-        

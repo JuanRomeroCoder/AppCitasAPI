@@ -23,9 +23,6 @@ export class Cita {
   })
   estado!: EstadoCitas;
 
-  @Column({ nullable: true })
-  sala!: string;
-
   // --- Relación con Doctor (siempre obligatoria) ---
   @ManyToOne(() => Doctor, { eager: true })
   @JoinColumn({ name: 'doctorId' })
@@ -35,10 +32,10 @@ export class Cita {
   doctorId!: string;
 
   // --- Relación con Paciente (nullable → BLOQUEADO no tiene paciente) ---
-  @ManyToOne(() => Paciente, { eager: true, nullable: true })
-  @JoinColumn({ name: 'patientId' })
-  patient!: Paciente;
+  @ManyToOne(() => Paciente, { eager: true })
+  @JoinColumn({ name: 'pacienteId' })
+  paciente!: Paciente;
 
-  @Column({ nullable: true })
-  patientId!: string;
+  @Column()
+  pacienteId!: string;
 }

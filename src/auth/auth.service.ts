@@ -1,28 +1,31 @@
 import { BadRequestException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { DataSource } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
-import { RegisterUsuarioDto } from './dto/register-usuario.dto'; //TODO: ARCHIVO BARRIL
-import { LoginUsuarioDto } from './dto/login-usuario.dto';  //TODO: ARCHIVO BARRIL
+import { RegisterUsuarioDto, LoginUsuarioDto } from './dto/index';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { UsuariosService } from '../usuarios/usuarios.service';
+import { ValidRoles } from './interfaces/valid-roles';
 
-import * as bcrypt from 'bcrypt';
-import { DataSource } from 'typeorm';
 import { Usuario } from 'src/usuarios/entities/usuario.entity';
 import { Doctor } from 'src/doctor/entities/doctor.entity';
 import { Paciente } from 'src/pacientes/entities/paciente.entity';
-import { ValidRoles } from './interfaces/valid-roles';
+import { ManejarError } from 'src/common/manejarError';
+
 
 
 @Injectable()
 export class AuthService {
 
   constructor(
-    private  UsuariosService: UsuariosService, //inyectamos modulo de UsuariosService para usar su logica
+    private  UsuariosService: UsuariosService, // modulo de UsuariosService para usar su logica
 
     private readonly jwtService: JwtService, //Servicio proporcionado por @nestjs/jwt y a su vez proporcionado por JwtModule
 
-    private readonly dataSource: DataSource //Servicio para el queryRunner
+    private readonly dataSource: DataSource, //Servicio para el queryRunner
+
+    private readonly manejarError: ManejarError
 
   ){}
 
@@ -57,16 +60,13 @@ export class AuthService {
       //Guardar los datos del usuario segun el rol impacta en Doctor o Paciente
       if (role === ValidRoles.DOCTOR ) {
 
-        //TODO: REVISAR SI SE PUEDE ACORTAR INGRESO DE ATRIBUTOS CON SPREAD OPERATOR
         const doctor = queryRunner.manager.create(Doctor, {
-          especialidad: registerUsuarioDto.especialidad,
-          horarioInicio: registerUsuarioDto.horarioInicio,
-          horarioFin: registerUsuarioDto.horarioFin,
+          ...registerUsuarioDto,
           usuario,
         });
-        await queryRunner.manager.save(doctor);
+        await queryRunner.manager.save( doctor );
 
-      } else  if (role === ValidRoles.PACIENTE || undefined){ //guarda los datos del DTO que tiene declarado el rol (Hecho por un admin) o sin rol declarado (REGISTRO)
+      } else if (role === ValidRoles.PACIENTE || undefined) { //guarda los datos del DTO que tiene declarado el rol (Hecho por un admin) o sin rol declarado (REGISTRO)
 
         const paciente = queryRunner.manager.create(Paciente, {
           telefono: registerUsuarioDto.telefono,
@@ -81,7 +81,6 @@ export class AuthService {
       //Terminar transaccion
       await queryRunner.commitTransaction();
 
-
       //respuesta que devuelve la funcion 
       return { message: 'Usuario creado',
                userId: usuario.id,
@@ -91,12 +90,10 @@ export class AuthService {
     } catch (error) {
 
       await queryRunner.rollbackTransaction(); //Si sale mal NADA IMPACTA EN LA BD
-      this.manejarDBError(error)
+      this.manejarError.manejarDBError( error )
 
-    }finally{
-
+    } finally {
       await queryRunner.release(); //desconectamos conexion con la pool de la BD
-
     }
   }
 
@@ -135,16 +132,5 @@ export class AuthService {
     return token;
 
   }
-
- //Manejador de errores (ej; ingresar un usuario con email ya existente en BD)
-  private manejarDBError( error: any ): never{
-
-    if ( error.code === `23505` )
-      throw new BadRequestException( error.detail );
-    console.log(error)
-
-    throw new InternalServerErrorException('Por favor revisa los logs del server')
-  }
-
 
 }

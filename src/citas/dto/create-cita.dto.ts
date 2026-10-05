@@ -14,8 +14,4 @@ export class CreateCitaDto {
     @IsUUID()
     @IsNotEmpty()
     doctorId!: string;
-
-    @IsString()
-    @IsOptional()
-    sala?: string;
 }

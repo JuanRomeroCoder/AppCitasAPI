@@ -1,7 +1,5 @@
 
 import { ValidRoles } from "src/auth/interfaces/valid-roles";
-import { Doctor } from "src/doctor/entities/doctor.entity";
-import { Paciente } from "src/pacientes/entities/paciente.entity";
 import { BeforeInsert, BeforeUpdate, Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('usuarios') //Transformamos la clase en una entidad que sera una tabla en la BD

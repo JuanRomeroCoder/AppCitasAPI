@@ -9,7 +9,7 @@ export class FiltrarCitasDto {
 
     @IsUUID()
     @IsOptional()
-    patientId?: string;
+    pacienteId?: string;
 
     @IsDateString()
     @IsOptional()

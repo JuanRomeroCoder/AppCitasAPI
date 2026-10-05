@@ -1,8 +1,9 @@
 import { BadRequestException, CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
-import { Usuario } from 'src/usuarios/entities/usuario.entity';
+
 import { META_ROLES } from '../decorators/role-protected.decorator';
+import { Usuario } from 'src/usuarios/entities/usuario.entity';
 
 
 //Evalua el rol de el usuario y permite o no el acceso
@@ -29,7 +30,6 @@ export class UserRoleGuard implements CanActivate {
     
     if ( !user )
     throw new BadRequestException('Usuario no encontrado');
-
   
     if ( validRoles.includes( user.role ) )
       return true;

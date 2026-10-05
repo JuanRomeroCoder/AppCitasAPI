@@ -1,15 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, ParseUUIDPipe } from '@nestjs/common';
-import { CitasService } from './citas.service';
-import { CreateCitaDto } from './dto/create-cita.dto';
-import { UpdateCitaDto } from './dto/update-cita.dto';
-import { Usuario } from 'src/usuarios/entities/usuario.entity';
-import { GetUser } from 'src/auth/decorators/get-user.decorator';
+import { Controller, Get, Post, Body, Patch, Param, UseGuards, Query, ParseUUIDPipe } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+
+import { ValidRoles } from 'src/auth/interfaces/valid-roles';
 import { UserRoleGuard } from 'src/auth/guards/user-role.guard';
-import { FiltrarCitasDto } from './dto/filtrar-citas';
+import { RoleProtected } from 'src/auth/decorators/role-protected.decorator';
+import { GetUser } from 'src/auth/decorators/get-user.decorator';
+
+import { CreateCitaDto, UpdateCitaDto, FiltrarCitasDto } from './dto/index';
+import { CitasService } from './citas.service';
+
+import { Usuario } from 'src/usuarios/entities/usuario.entity';
+
 
 @Controller('citas')
-@UseGuards( AuthGuard('jwt'), UserRoleGuard ) //! USO DE GUARDS PARA JWT Y ROLES ( IMPORTANTE PARA DEGUB EN PRE )
+@UseGuards( AuthGuard('jwt'), UserRoleGuard )
 export class CitasController {
 
   constructor(
@@ -18,6 +22,7 @@ export class CitasController {
 
   //Crear una cita
   @Post()
+  @RoleProtected( ValidRoles.PACIENTE)
   create( @Body() createCitaDto: CreateCitaDto,
           @GetUser() user: Usuario ) { //GetUser para extraer objeto user de cabecera
     return this.citasService.create(createCitaDto, user);
@@ -25,13 +30,15 @@ export class CitasController {
 
   //Obtener citas
   @Get()
+  @RoleProtected( ValidRoles.PACIENTE, ValidRoles.ADMIN, ValidRoles.DOCTOR )
   findAll( @Query() filtrarCitasDto: FiltrarCitasDto,
            @GetUser() user: Usuario ) {
-    return this.citasService.findAll( filtrarCitasDto, user )          
+    return this.citasService.findAll( filtrarCitasDto, user)          
   }
  
-  //Modificar citas
+  //Modificar estado de las citas
   @Patch(':id') //ID de la cita
+  @RoleProtected( ValidRoles.DOCTOR, ValidRoles.ADMIN )
   patch( @Param('id', ParseUUIDPipe) id: string,
          @Body() updatecitaDto : UpdateCitaDto ){
     return this.citasService.patchCitas( id, updatecitaDto )

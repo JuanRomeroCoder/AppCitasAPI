@@ -5,7 +5,7 @@
 #CitAppAPI
 
 1.Clonar el proyecto
-2. ````yarn install````
+2. ````yarn install```` para instalar todas sus dependencias
 3.Clonar el archivo ````.env.template```` y renombralo a ````.env````
 4. Cambiar las variables de entorno
 5. Levantar la base de datos

@@ -1,4 +1,5 @@
-import {  BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { ManejarError } from '../common/manejarError';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Usuario } from './entities/usuario.entity';
 import { Repository } from 'typeorm';
@@ -15,9 +16,10 @@ export class UsuariosService {
   //Inyectamos el repositorio con el que vamos a guardar los datos
   constructor(
     @InjectRepository(Usuario) 
-    private readonly usuariosRepository : Repository<Usuario>
-  ){}
+    private readonly usuariosRepository : Repository<Usuario>,
 
+    private readonly manejarError : ManejarError
+  ){}
 
 
   //Registrar/crear usuario
@@ -30,7 +32,6 @@ export class UsuariosService {
   }
 
 
-
   //Logica para Login del módulo Auth 
   async findLoginId( loginUsuarioDto: LoginUsuarioDto ){
 
@@ -39,13 +40,11 @@ export class UsuariosService {
 
     const usuario = await this.usuariosRepository.findOne({
       where: { email },
-      select: { email: true, password: true, id: true, role: true } //! role:true para debug de comprobacion de roles QUITAR CUANDO SE SOLUCIONE
+      select: { email: true, password: true, id: true, role: true } //! role:true para debug de comprobacion de roles QUITAR CUANDO SE SOLUCIONE 
     });
     
     return usuario
   }
-
-
 
 
   //Obtener todos los usuarios
@@ -61,7 +60,6 @@ export class UsuariosService {
   }
 
 
-
   //Obtener por ID
   async findOne( id: string ) {
     const usuario = await this.usuariosRepository.findOneBy({ id });
@@ -70,7 +68,6 @@ export class UsuariosService {
 
     return usuario;
   }
-
 
 
   //modificar usuario
@@ -91,7 +88,8 @@ export class UsuariosService {
       return usuario;
 
     } catch (error) {
-      this.manejarDBError(error);
+      this.manejarError.manejarDBError( error );
+      
     }
     
   }
@@ -105,14 +103,5 @@ export class UsuariosService {
     return `El usuario con el ID: ${usuario.id} ha sido eliminado correctamente`;
   }
 
-
-  //manejador de errores
-   private manejarDBError( error: any ): never {
-      if ( error.code === `23505` )
-        throw new BadRequestException( error.detail );
-      console.log(error)
-    
-      throw new InternalServerErrorException('Por favor revisa los logs del server')
-    }
 
 }

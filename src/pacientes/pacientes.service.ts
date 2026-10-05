@@ -1,9 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Paciente } from './entities/paciente.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
-
+import { Paciente } from './entities/paciente.entity';
 
 @Injectable()
 export class PacientesService {
@@ -48,7 +47,9 @@ export class PacientesService {
     .getOne()
 
     if (!paciente) {
+      console.log(paciente)
       throw new NotFoundException('No existe un paciente para este usuario');
+      
     }
     return paciente;
   }

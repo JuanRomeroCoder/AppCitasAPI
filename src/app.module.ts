@@ -1,22 +1,17 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { access } from 'fs';
 import { AuthModule } from './auth/auth.module';
 import { UsuariosModule } from './usuarios/usuarios.module';
 import { DoctorModule } from './doctor/doctor.module';
 import { PacientesModule } from './pacientes/pacientes.module';
 import { CitasModule } from './citas/citas.module';
-
-
-
-
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
     //Configurar las varibales de entorno
-    ConfigModule.forRoot(),
-
+    ConfigModule.forRoot({ isGlobal: true }),
 
     //Configurar la conexion de TypeORM para Postgres
     TypeOrmModule.forRoot({
@@ -30,20 +25,17 @@ import { CitasModule } from './citas/citas.module';
       synchronize: true, //Solo en produccion , se usa para ver cambios en vivo
     }),
 
-
     AuthModule,
-
 
     UsuariosModule,
 
-
     DoctorModule,
-
 
     PacientesModule,
 
+    CitasModule,
 
-    CitasModule
+    CommonModule
 
   ],
   controllers: [],

@@ -3,12 +3,12 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
-import { UsuariosModule } from 'src/usuarios/usuarios.module';
 import { JwtStrategy } from './strategies/jwt.strategy';
 
+import { UsuariosModule } from 'src/usuarios/usuarios.module';
 
+import { AuthService } from './auth.service';
+import { AuthController } from './auth.controller';
 
 @Module({
   controllers: [AuthController],
@@ -23,6 +23,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 
     //Configuar modulo de JWT de forma async para que arranque correctamente
     JwtModule.registerAsync({
+      
       imports: [ConfigModule],
       inject: [ConfigService], //lo inyectamos para acceder a la variable de entorno de JWT_PASSWORD
 

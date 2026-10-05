@@ -11,7 +11,6 @@ import { Usuario } from './entities/usuario.entity';
   providers: [UsuariosService],
   imports: [
     TypeOrmModule.forFeature([ Usuario ]), //Importamos la entidad 
-    
   ],
   exports:[ UsuariosService ] // usuarios service para usar su logica en el modulo Auth
 })
